@@ -34,12 +34,6 @@
   <li>📜 Scroll through the document</li>
 </ul>
 
-<h2>Project Structure</h2>
-<ul>
-  <li><code>NotepadGUI</code> - Main application window and text editor</li>
-  <li><code>FontMenu</code> - Font configuration dialog</li>
-</ul>
-
 <h2>Screenshots</h2>
 <p align="center">
   <img src="assets/notepad.gif" alt="Notepad Project">
