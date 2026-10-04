@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -19,6 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.undo.UndoManager;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -27,6 +29,9 @@ import javax.swing.JCheckBoxMenuItem;
 public class NotepadGUI extends JFrame{
 	
 	private JTextArea textArea;
+	public JTextArea getTextArea() {
+		return textArea;
+	}
 	private UndoManager undoManager;
 	private File currentFile;
 	private JFileChooser fileChooser;
@@ -39,6 +44,8 @@ public class NotepadGUI extends JFrame{
 		
 		undoManager = new UndoManager();
 		fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File("src/assets"));
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt"));
 		
 		addGuiComponents();
 	}
@@ -109,7 +116,7 @@ public class NotepadGUI extends JFrame{
 						String readText;
 						StringBuilder fileText = new StringBuilder();
 						while((readText = bufferedReader.readLine()) != null) {
-							fileText.append(readText + "/n");
+							fileText.append(readText + "\n");
 						}
 							
 						bufferedReader.close();
@@ -161,6 +168,26 @@ public class NotepadGUI extends JFrame{
 		fileMenu.add(saveAsMenuItem);
 		
 		JMenuItem saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.addActionListener(
+        	new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+				    if(currentFile == null) saveAsMenuItem.doClick();
+				    
+				    if(currentFile == null) return;
+				
+				    try{
+				        FileWriter fileWriter = new FileWriter(currentFile);
+				        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+				        bufferedWriter.write(textArea.getText());
+				        bufferedWriter.close();
+				        fileWriter.close();
+				    }catch(Exception e1){
+				        e1.printStackTrace();
+				    }
+				}
+	        }
+        );
 		fileMenu.add(saveMenuItem);
 		
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
@@ -270,6 +297,55 @@ public class NotepadGUI extends JFrame{
 	
 	private JMenu addViewMenu() {
 		JMenu viewMenu = new JMenu("View");
+		
+		JMenu zoomMenu = new JMenu("Zoom");
+		
+        JMenuItem zoomInMenuItem = new JMenuItem("Zoom in");
+        zoomInMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Font currentFont = textArea.getFont();
+                textArea.setFont(new Font(
+                   currentFont.getName(),
+                   currentFont.getStyle(),
+                   currentFont.getSize() + 1
+                ));
+            }
+        });
+        zoomMenu.add(zoomInMenuItem);
+
+        JMenuItem zoomOutMenuItem = new JMenuItem("Zoom out");
+        zoomOutMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Font currentFont = textArea.getFont();
+                textArea.setFont(new Font(
+                        currentFont.getName(),
+                        currentFont.getStyle(),
+                        currentFont.getSize() - 1
+                ));
+            }
+        });
+        zoomMenu.add(zoomOutMenuItem);
+
+        JMenuItem zoomRestoreMenuItem = new JMenuItem("Restore Default Zoom");
+        zoomRestoreMenuItem.addActionListener(
+        	new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                Font currentFont = textArea.getFont();
+	                textArea.setFont(new Font(
+	                        currentFont.getName(),
+	                        currentFont.getStyle(),
+	                        12
+	                ));
+	            }
+	        }
+        );
+        zoomMenu.add(zoomRestoreMenuItem);
+
+        viewMenu.add(zoomMenu);
+		
 		return viewMenu;
 	}
 }
