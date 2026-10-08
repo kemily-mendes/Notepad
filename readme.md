@@ -7,7 +7,6 @@
 <ul>
   <li><b>JDK 18+</b> - Java Version</li>
   <li><b>Java Swing</b> - GUI Framework</li>
-  <li><b>AWT</b> - Layout Management, Component Orientation & Event Handling</li>
   <li><b>JTattoo</b> - Look and Feel Customization</li>
 </ul>
 
